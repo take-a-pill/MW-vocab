@@ -4106,7 +4106,7 @@ if ('speechSynthesis' in window) {
     let nextIdx = curIdx;
     let count = 0;
 
-    // ลูปหาคำถัดไปที่ "ยังไม่รู้"
+    // ลูปหาคำถัดไปที่ยังไม่รู้ (ถ้ากด Knew it ไปแล้วจะถูกข้ามอัตโนมัติ)
     while (count < words.length) {
         nextIdx = (nextIdx + 1) % words.length;
         count++;
@@ -4116,7 +4116,7 @@ if ('speechSynthesis' in window) {
     }
 
     curIdx = nextIdx;
-    saveLastPosition(); // บันทึกตำแหน่ง
+    saveLastPosition(); // สั่งบันทึกตำแหน่งคำศัพท์ล่าสุดลงความจำ
     renderFlashcardView();
 }
 
@@ -4413,17 +4413,17 @@ function renderQuizQuestion() {
     renderQuizInit();
 }
 
-// ฟังก์ชันสำหรับบันทึกตำแหน่งล่าสุด
+// ฟังก์ชันสำหรับบันทึกตำแหน่งล่าสุด (หัวใจสำคัญของระบบเซฟ)
 function saveLastPosition() {
     localStorage.setItem('mw_last_session', JSON.stringify({ unit: curUnit, idx: curIdx }));
 }
 
 window.onload = () => { 
-    // 1. ระบบหั่นคำศัพท์ทำงานก่อน (ที่วางไว้ข้างบน)
-    // 2. เรียกฟังก์ชันเตรียมตัวเลือกหลอก (คงไว้เหมือนเดิมครับ)
+    // 1. ระบบหั่นคำศัพท์ทำงานก่อน
+    // 2. เรียกฟังก์ชันเตรียมตัวเลือกหลอก
     prepareGlobalVocab(); 
     
-    // --- เพิ่มระบบโหลดตำแหน่งล่าสุดแทรกตรงนี้ครับ ---
+    // --- โหลดตำแหน่งล่าสุดจากความจำตอนเปิดแอป ---
     const lastSession = JSON.parse(localStorage.getItem('mw_last_session'));
     if (lastSession && vocabData[lastSession.unit]) {
         curUnit = lastSession.unit;
